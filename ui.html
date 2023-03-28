@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+  <title>Availability Scheduling</title>
+
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Include CSS framework here, such as Bootstrap or Materialize -->
+
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>Set Your Availability</h1>
+
+    <div id="calendar"></div>
+
+    <button id="save-btn" class="btn btn-primary">Save</button>
+
+  </div>
+
+  <!-- Include JS libraries here, such as jQuery, FullCalendar, and Moment.js -->
+
+  <script src="jquery.min.js"></script>
+
+  <script src="moment.min.js"></script>
+
+  <script src="fullcalendar.min.js"></script>
+
+  <script>
+
+    $(document).ready(function() {
+
+      // Initialize the calendar
+
+      $('#calendar').fullCalendar({
+
+        // Set options here, such as the view, the time range, and the event source
+
+        defaultView: 'agendaWeek',
+
+        minTime: '08:00:00',
+
+        maxTime: '20:00:00',
+
+        slotDuration: '01:00:00',
+
+        allDaySlot: false,
+
+        events: []
+
+      });
+
+      // Handle the save button click event
+
+      $('#save-btn').click(function() {
+
+        // Get the selected time slots from the calendar and save them to the server
+
+        var events = $('#calendar').fullCalendar('clientEvents');
+
+        var availableSlots = [];
+
+        for (var i = 0; i < events.length; i++) {
+
+          var start = events[i].start.format('YYYY-MM-DDTHH:mm:ss');
+
+          var end = events[i].end.format('YYYY-MM-DDTHH:mm:ss');
+
+          availableSlots.push({ start: start, end: end });
+
+        }
+
+        // Send the availableSlots array to the server using AJAX
+
+        $.ajax({
+
+          url: '/set_availability',
+
+          type: 'POST',
+
+          data: { availableSlots: availableSlots },
+
+          success: function(response) {
+
+            // Show a success message or refresh the calendar view
+
+            alert('Availability saved successfully!');
+
+          },
+
+          error: function(xhr, status, error) {
+
+            // Show an error message
+
+            alert('An error occurred while saving availability: ' + error);
+
+          }
+
+        });
+
+      });
+
+    });
+
+  </script>
+
+</body>
+
+</html>
+
